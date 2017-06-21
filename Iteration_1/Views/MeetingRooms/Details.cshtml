@@ -1,0 +1,36 @@
+﻿@model Iteration_1.Models.MeetingRoom
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details of Meeting Room</h2>
+
+<div>
+    <hr />
+    <div>
+        @Html.Partial("~/Views/MeetingRooms/Trial.cshtml", (List<Iteration_1.Models.Booking>)Session["Bookings"])
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">@Html.DisplayFor(model => model.RoomName)</h3>
+            </div>
+            <div class="panel-body">
+                @Html.DisplayNameFor(model => model.Seats): @Html.DisplayFor(model => model.Seats)
+            </div>
+            <div class="panel-body">
+                @Html.DisplayNameFor(model => model.TeleCon): @Html.DisplayFor(model => model.TeleCon)
+            </div>
+            <div class="panel-body">
+                @Html.DisplayNameFor(model => model.VideoCon): @Html.DisplayFor(model => model.VideoCon)
+            </div>
+            <div class="panel-body">
+                @Html.DisplayNameFor(model => model.Projector): @Html.DisplayFor(model => model.Projector)
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.RoomId }) |*@
+    @Html.ActionLink("Back to List", "Index")
+</p>

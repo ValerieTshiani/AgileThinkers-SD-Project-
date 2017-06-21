@@ -1,0 +1,109 @@
+﻿@model  IEnumerable<Iteration_1.Models.Booking>
+
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Open/Booked</th>
+            <th>Booked By</th>
+            <th>Book</th>
+        </tr>
+    </thead>
+    <tbody>
+            @{
+                int hour = 8;
+                string minute = "00";
+                TimeSpan time = new TimeSpan(8, 0, 0);
+                TimeSpan toAdd = new TimeSpan(0, 30, 0);
+                for (int x = 0; x < 21; x++)
+                {
+                    if (x != 0)
+                    {
+                        if (x % 2 == 1)
+                        {
+                            minute = "30";
+                        }
+                        else
+                        {
+                            hour += 1;
+                            minute = "00";
+                        }
+                    }
+                    if (hour == 8 || hour == 9)
+                    {
+                        Session["aString"] = "0" + hour.ToString() + ":" + minute;
+                    }
+                    else
+                    {
+                        Session["aString"] = hour.ToString() + ":" + minute;
+                    }
+                    foreach (var item in Model)
+                    {
+                        DateTime today = DateTime.Today;
+                        DateTime now = DateTime.Now;
+                        DateTime inDB = item.BookedFor;
+                        TimeSpan nowTime = now.TimeOfDay;
+                        TimeSpan inDBTime = inDB.TimeOfDay;
+                        TimeSpan temp = time.Add(toAdd);
+                        Iteration_1.Models.MeetingRoom mRoom = (Iteration_1.Models.MeetingRoom)Session["Room"];
+                        int temp1 = mRoom.RoomId;
+                        int temp2 = item.RoomId;
+                        if (inDB.Date == today)
+                        {
+                            if (inDBTime >= time & inDBTime < temp & (item.RoomId == mRoom.RoomId))
+                            {
+                                Session["IsCorrectTimeandRoom"] = true;
+                            }
+                            else if ((inDBTime < time | inDBTime >= temp) & (item.RoomId == mRoom.RoomId))
+                            {
+                                if (Session["IsCorrectTimeandRoom"] != null)
+                                {
+                                    Session["IsCorrectTimeandRoom"] = true;
+                                }
+                                else
+                                {
+                                    Session["IsCorrectTimeandRoom"] = null;
+                                }
+                            }
+                            else if (inDBTime >= time & inDBTime < temp & (item.RoomId != mRoom.RoomId))
+                            {
+                                if (Session["IsCorrectTimeandRoom"] != null)
+                                {
+                                    Session["IsCorrectTimeandRoom"] = true;
+                                }
+                                else
+                                {
+                                    Session["IsCorrectTimeandRoom"] = null;
+                                }
+                            }
+                        }
+
+                    }
+                    if (Session["IsCorrectTimeandRoom"] != null)
+                    {
+                                    <tr class="danger">
+                                        <td>@Session["aString"]</td>
+                                        <td>
+                                            Booked
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                        Session["IsCorrectTimeandRoom"] = null;
+                    }
+                    else
+                    {
+                       <tr  style="background-color:white;">
+                           <td>@Session["aString"]</td>
+                            <td>
+                                  Open
+                             </td>
+                             <td></td>
+                             <td>@Html.ActionLink("Book", "Create", "Bookings")</td>
+                         </tr>
+                    }
+                time = time.Add(toAdd);
+                }
+            }
+    </tbody>
+</table> 
